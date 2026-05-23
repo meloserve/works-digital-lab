@@ -161,8 +161,17 @@ footer {
 /* ==== MOBILE ==== */
 @media (max-width: 768px) {
 
-  body { cursor: auto; }
-  .virtual-cursor { display: none; }
+  section {
+    scroll-margin-top: 140px;
+  }
+
+  body {
+    cursor: auto;
+  }
+
+  .virtual-cursor {
+    display: none;
+  }
 
   header {
     padding: 20px;
@@ -290,5 +299,5 @@ footer {
 
   box-shadow: none;
   }
-  
+
 }
