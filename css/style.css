@@ -86,17 +86,40 @@ h2 { letter-spacing: 3px; }
 p { line-height: 1.8; }
 
 /* ==== BUTTON ==== */
-.btn {
+
+button {
+  appearance: none;
+  -webkit-appearance: none;
+
+  background: none;
+  border: none;
+
+  color: inherit;
+  font: inherit;
+}
+
+.btn,
+button.btn {
   display: inline-block;
+
   margin-top: 20px;
   padding: 12px 28px;
+
   border: 1px solid #333;
+
+  background: transparent;
+
   text-decoration: none;
   color: #333;
+
   letter-spacing: 2px;
+
   transition: 0.3s;
+  cursor: pointer;
 }
-.btn:hover {
+
+.btn:hover,
+button.btn:hover {
   background: #333;
   color: #fff;
 }
