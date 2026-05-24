@@ -81,3 +81,22 @@ function animate() {
   requestAnimationFrame(animate);
 }
 animate();
+
+/* ==== AUDIO ==== */
+const bgAudio = document.getElementById('bgAudio');
+const soundToggle = document.getElementById('soundToggle');
+
+bgAudio.volume = 0.15;
+
+soundToggle.addEventListener('click', () => {
+
+  bgAudio.muted = !bgAudio.muted;
+
+  if (bgAudio.muted) {
+    soundToggle.innerText = 'SOUND OFF';
+  } else {
+    soundToggle.innerText = 'SOUND ON';
+    bgAudio.play();
+  }
+
+});
