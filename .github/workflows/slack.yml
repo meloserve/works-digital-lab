@@ -1,4 +1,4 @@
-name: Slack Test
+name: Slack Commit Notification
 
 on:
   push:
@@ -6,11 +6,73 @@ on:
       - main
 
 jobs:
-  test:
+  notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Send Slack
+      - name: Send commit summary to Slack
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          REPOSITORY: ${{ github.repository }}
+          BRANCH: ${{ github.ref_name }}
+          PUSHER: ${{ github.actor }}
+          COMMIT_SHA: ${{ github.sha }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          COMMIT_AUTHOR: ${{ github.event.head_commit.author.name }}
+          COMMIT_URL: ${{ github.event.head_commit.url }}
+          COMPARE_URL: ${{ github.event.compare }}
         run: |
+          SHORT_SHA="${COMMIT_SHA:0:7}"
+
+          payload=$(jq -n \
+            --arg repository "$REPOSITORY" \
+            --arg branch "$BRANCH" \
+            --arg pusher "$PUSHER" \
+            --arg short_sha "$SHORT_SHA" \
+            --arg commit_message "$COMMIT_MESSAGE" \
+            --arg commit_author "$COMMIT_AUTHOR" \
+            --arg commit_url "$COMMIT_URL" \
+            --arg compare_url "$COMPARE_URL" \
+            '{
+              text: ("Push to " + $repository + " (" + $branch + ")"),
+              blocks: [
+                {
+                  type: "section",
+                  text: {
+                    type: "mrkdwn",
+                    text: ("*Push detected:* `" + $repository + "` / `" + $branch + "`")
+                  }
+                },
+                {
+                  type: "section",
+                  fields: [
+                    {
+                      type: "mrkdwn",
+                      text: ("*Pusher:*\n" + $pusher)
+                    },
+                    {
+                      type: "mrkdwn",
+                      text: ("*Commit:*\n<" + $commit_url + "|" + $short_sha + ">")
+                    },
+                    {
+                      type: "mrkdwn",
+                      text: ("*Author:*\n" + $commit_author)
+                    },
+                    {
+                      type: "mrkdwn",
+                      text: ("*Changes:*\n<" + $compare_url + "|View compare>")
+                    }
+                  ]
+                },
+                {
+                  type: "section",
+                  text: {
+                    type: "mrkdwn",
+                    text: ("*Message:*\n```" + $commit_message + "```")
+                  }
+                }
+              ]
+            }')
+
           curl -X POST -H "Content-type: application/json" \
-          --data '{"text":"🔥 Slack test from GitHub Actions"}' \
-          ${{ secrets.SLACK_WEBHOOK_URL }}
+            --data "$payload" \
+            "$SLACK_WEBHOOK_URL"
