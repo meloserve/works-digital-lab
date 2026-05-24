@@ -88,15 +88,23 @@ const soundToggle = document.getElementById('soundToggle');
 
 bgAudio.volume = 0.15;
 
-soundToggle.addEventListener('click', () => {
+soundToggle.addEventListener('click', async () => {
 
-  bgAudio.muted = !bgAudio.muted;
+  if (bgAudio.muted || bgAudio.paused) {
+    bgAudio.muted = false;
 
-  if (bgAudio.muted) {
-    soundToggle.innerText = 'SOUND OFF';
+    try {
+      await bgAudio.play();
+      soundToggle.innerText = '♫';
+    } catch (error) {
+      console.log('Audio playback failed:', error);
+      bgAudio.muted = true;
+      soundToggle.innerText = '♪';
+    }
   } else {
-    soundToggle.innerText = 'SOUND ON';
-    bgAudio.play();
+    bgAudio.muted = true;
+    bgAudio.pause();
+    soundToggle.innerText = '♪';
   }
 
 });
