@@ -202,7 +202,7 @@ footer {
 
   h1, h2, p { text-align: center; }
 
-  .btn {
+ section .btn {
     width: 80%;
     text-align: center;
   }
