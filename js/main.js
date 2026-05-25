@@ -6,15 +6,31 @@ function closeBooking() {
   document.getElementById("bookingModal").style.display = "none";
 }
 
-/* ==== FADE ==== */
-const fades = document.querySelectorAll('.fade');
-window.addEventListener('scroll', () => {
-  fades.forEach(el => {
-    const rect = el.getBoundingClientRect().top;
-    if (rect < window.innerHeight - 100) {
-      el.classList.add('show');
+/* ==== AUDIO ==== */
+const bgAudio = document.getElementById('bgAudio');
+const soundToggle = document.getElementById('soundToggle');
+
+bgAudio.volume = 0.15;
+
+soundToggle.addEventListener('click', async () => {
+
+  if (bgAudio.muted || bgAudio.paused) {
+    bgAudio.muted = false;
+
+    try {
+      await bgAudio.play();
+      soundToggle.innerText = '♫';
+    } catch (error) {
+      console.log('Audio playback failed:', error);
+      bgAudio.muted = true;
+      soundToggle.innerText = '♪';
     }
-  });
+  } else {
+    bgAudio.muted = true;
+    bgAudio.pause();
+    soundToggle.innerText = '♪';
+  }
+
 });
 
 /* ==== CURSOR ==== */
@@ -72,6 +88,17 @@ hoverTargets.forEach(el => {
 
 });
 
+/* ==== FADE ==== */
+const fades = document.querySelectorAll('.fade');
+window.addEventListener('scroll', () => {
+  fades.forEach(el => {
+    const rect = el.getBoundingClientRect().top;
+    if (rect < window.innerHeight - 100) {
+      el.classList.add('show');
+    }
+  });
+});
+
 /* ==== ANIMATION LOOP ==== */
 function animate() {
   currentX += (mouseX - currentX) * speed;
@@ -81,30 +108,3 @@ function animate() {
   requestAnimationFrame(animate);
 }
 animate();
-
-/* ==== AUDIO ==== */
-const bgAudio = document.getElementById('bgAudio');
-const soundToggle = document.getElementById('soundToggle');
-
-bgAudio.volume = 0.15;
-
-soundToggle.addEventListener('click', async () => {
-
-  if (bgAudio.muted || bgAudio.paused) {
-    bgAudio.muted = false;
-
-    try {
-      await bgAudio.play();
-      soundToggle.innerText = '♫';
-    } catch (error) {
-      console.log('Audio playback failed:', error);
-      bgAudio.muted = true;
-      soundToggle.innerText = '♪';
-    }
-  } else {
-    bgAudio.muted = true;
-    bgAudio.pause();
-    soundToggle.innerText = '♪';
-  }
-
-});
