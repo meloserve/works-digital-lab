@@ -290,6 +290,15 @@ input[type="submit"].btn:hover {
 
   h1, h2, p { text-align: center; }
 
+section .btn {
+    display: block;
+    width: fit-content;
+
+    margin: 20px auto 0;
+
+    text-align: center;
+  }
+
   .booking-buttons {
   width: 100%;
   max-width: 320px;
